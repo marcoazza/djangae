@@ -4,6 +4,11 @@ from functools import wraps
 
 from djangae.utils import memoized
 
+import requests
+
+
+LOCATION_METADATA_SERVER_ENDPOINT = "http://metadata.google.internal/computeMetadata/v1/instance/zone"
+
 
 def application_id():
     # Fallback to example on local or if this is not specified in the
@@ -97,4 +102,9 @@ def project_id():
 def region_id():
     # Environment variable will exist on production servers
     # fallback to "e" locally if it doesn't exist
+    import logging
+    if is_production_environment():
+        response = requests.get(LOCATION_METADATA_SERVER_ENDPOINT)
+        logging.warning(response)
+
     return os.environ.get("GAE_APPLICATION", "e~example").split("~", 1)[0]
