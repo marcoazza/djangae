@@ -84,7 +84,7 @@ def internalupload(request):
         return HttpResponseServerError()
 
 
-@environment.task_or_admin_only
+@environment.task_only
 def clearsessions(request):
     engine = import_module(settings.SESSION_ENGINE)
     try:
