@@ -42,7 +42,7 @@ setup(
     include_package_data=True,
     # dependencies
     install_requires=[
-        'django-gcloud-connectors @ https://github.com/marcoazza/django-gcloud-connectors.git@df32930684413ce666ae5f7740325873ea1807fa',
+        'https://github.com/marcoazza/django-gcloud-connectors.git@df32930684413ce666ae5f7740325873ea1807fa',
         'google-api-python-client>=1.7.11',
         # requests required by cloud storage file backend
         'requests>=2.22.0'
