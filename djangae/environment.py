@@ -99,12 +99,25 @@ def project_id():
     return os.environ.get("GOOGLE_CLOUD_PROJECT", "example")
 
 
-def region_id():
+def location_id():
     # Environment variable will exist on production servers
-    # fallback to "e" locally if it doesn't exist
-    import logging
-    if is_production_environment():
-        response = requests.get(LOCATION_METADATA_SERVER_ENDPOINT)
-        logging.warning(response)
+    # fallback to "europe-west1" locally if it doesn't exist
+    if is_development_environment():
+        return 'europe-west1'
 
-    return os.environ.get("GAE_APPLICATION", "e~example").split("~", 1)[0]
+    from googleapiclient import discovery
+    from oauth2client.client import GoogleCredentials
+
+    credentials = GoogleCredentials.get_application_default()
+    service = discovery.build('cloudtasks', 'v2', credentials=credentials)
+    gae_project_id = environment.project_id()
+    name = f'projects/{gae_project_id}'
+
+    location_resource_request = service.projects().locations().list(name=name)
+    available_locations = location_resource_request.execute()
+    available_locations = available_locations.get('locations')
+    first_location = None
+    if available_locations:
+        first_location = available_locations[0].get('locationId')
+
+    return first_location

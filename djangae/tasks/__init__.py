@@ -63,10 +63,10 @@ def ensure_required_queues_exist():
         client.create_queue(parent_path, queue_dict)
 
 
-def cloud_tasks_region():
+def cloud_tasks_location():
     location_id = getattr(settings, CLOUD_TASKS_LOCATION_SETTING, None)
     if not location_id:
-        location_id = environment.region_id()
+        location_id = environment.location_id()
 
     return location_id
 
@@ -86,7 +86,7 @@ def cloud_tasks_parent_path():
         unset, uses the project ID from the environment
     """
 
-    location_id = cloud_tasks_region()
+    location_id = cloud_tasks_location()
     project_id = cloud_tasks_project()
 
     assert(project_id)
